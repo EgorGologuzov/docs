@@ -40,7 +40,7 @@ npm install npm -g
 
 ## Убрать лишние зависимости
 
-В файле package.json оставить минимальный набор зависимостей
+1. В файле package.json оставить минимальный набор зависимостей
 
 ```json
   "dependencies": {
@@ -49,8 +49,9 @@ npm install npm -g
     "react-scripts": "5.0.1"
   },
 ```
-
-Обновить зависимости
+2. Удалить папку node_modules и файл package-lock.json
+3. Удалить упоминания reportWebVitals из index.js
+3. Обновить зависимости
 ```
 npm install
 ```
