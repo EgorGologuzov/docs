@@ -15,3 +15,11 @@
 
 > [!CAUTION]
 > Advises about risks or negative outcomes of certain actions.
+
+### 2. Ссылки
+
+[Url](url)
+
+[File](filename.md)
+
+[Caption](#текст-заголовка)
