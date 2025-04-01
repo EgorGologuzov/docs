@@ -1,4 +1,7 @@
-# Создание проекта React
+- [Создание проекта с нуля](#создание-проекта-react-с-нуля)
+- [Старт из склонированного репозитория](#старт-из-склонированного-репозитория)
+
+# Создание проекта React с нуля
 
 ## Установка node.js:
 
@@ -98,3 +101,59 @@ Manifest: Line: 1, column: 1, Syntax error.
 **Решение**
 
 Удалить `<link>` с манифестом в /public/index.html
+
+## Установка React Router:
+
+```
+npm i react-router
+```
+
+## Установка Material UI:
+
+Сама библиотека:
+```
+npm install @mui/material @emotion/react @emotion/styled
+```
+Щрифт:
+```
+npm install @fontsource/roboto
+```
+В index.js вставить:
+```
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
+```
+Иконки:
+```
+npm install @mui/icons-material
+```
+
+# Старт из склонированного репозитория
+
+## Установить недостающие зависимости из package.json
+
+(в том числе при первом запуске проекта, склонированного из репозитория):
+
+```
+npm install
+```
+
+## Если проблема с установкой пакетов:
+```
+npm error code ERESOLVE
+npm error ERESOLVE unable to resolve dependency tree
+npm error
+npm error While resolving: felix-groom@0.1.0
+npm error Found: react@19.0.0
+npm error node_modules/react
+```
+
+**Решение:**
+```
+npm install @react-google-maps/api --legacy-peer-deps
+```
+`@react-google-maps/api` заменить на имя пакета
+
+Повторная попытка установки пакета успешна
