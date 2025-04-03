@@ -130,6 +130,15 @@ import '@fontsource/roboto/700.css';
 npm install @mui/icons-material
 ```
 
+## Установка Redux Toolkit:
+
+Туториал по Redux Toolkit: https://www.youtube.com/watch?v=QgK_-G-hWeA
+
+Сама библиотека:
+```
+npm i @reduxjs/toolkit react-redux
+```
+
 # Старт из склонированного репозитория
 
 ## Установить недостающие зависимости из package.json

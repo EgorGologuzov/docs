@@ -1,6 +1,6 @@
 # Синтаксис .md: Примеры
 
-### 1. Заметки
+### Заметки (только для Gitnub)
 > [!NOTE]
 > Только для GitHub!!!
 
@@ -16,10 +16,24 @@
 > [!CAUTION]
 > Advises about risks or negative outcomes of certain actions.
 
-### 2. Ссылки
+### Ссылки
 
 [Url](url)
 
 [File](filename.md)
 
 [Caption](#текст-заголовка)
+
+### Таблицы
+
+Атрибут | Тип | Комментарий
+---|---|---
+id* | uuid | Идентификатор владельца
+phone* | str | Номер телефона владельца
+email* | str | Email владельца
+
+### Картинки
+
+<div align=center>
+  <img width=200 src=assets/Github.webp />
+</div>
