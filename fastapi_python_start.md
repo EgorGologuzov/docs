@@ -20,5 +20,9 @@ pip install fastapi[standart]
 
 Запуск приложения:
 ```
+fastapi dev main.py
+```
+или
+```
 uvicorn main:app --reload
 ```
