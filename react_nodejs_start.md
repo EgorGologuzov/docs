@@ -110,7 +110,7 @@ npm i react-router
 
 ## Установка Material UI:
 
-Сама библиотека:
+Сама библиотека + полезные утилиты:
 ```
 npm install @mui/material @emotion/react @emotion/styled
 ```
@@ -134,9 +134,18 @@ npm install @mui/icons-material
 
 Туториал по Redux Toolkit: https://www.youtube.com/watch?v=QgK_-G-hWeA
 
-Сама библиотека:
+Сама библиотека + полезные утилиты:
 ```
 npm i @reduxjs/toolkit react-redux
+```
+
+## Установка Redux Query:
+
+Туториал по React Query: https://www.youtube.com/watch?v=4-SOv7eTfoQ
+
+Сама библиотека + полезные утилиты:
+```
+npm i @tanstack/react-query
 ```
 
 # Старт из склонированного репозитория
