@@ -1,0 +1,242 @@
+Деплой проекта RBP.Web на виртуальную машину Yandex Cloud.
+Гайд - https://www.youtube.com/watch?v=j8JMTxLYu3U
+
+1.Покупка домена egor-gologuzov.ru на сайте reg.ru:
+	дата покупки: 10.04.2024
+	срок: 1 год
+	почта: gologuzovegor@gmail.com
+	телефон: +79923405822
+	паспортные данные: с искажениями
+
+2.Создание ВМ на Yandex Cloud:
+	название: evrazrbp
+	ОС: Ubuntu OS Login (20.04)
+	диск: HDD, 20 Gb
+	vCPU: Intel Cascade Lake (5%)
+	RAM: 1 Gb
+	прерываемая: да
+	логин/пользователь: admin
+	публичный IP: 158.160.80.59
+
+3.Подключение к ВМ:
+	ssh admin@158.160.80.59
+
+4.Установка проекта:
+	sudo su -
+	cd /
+	apt install git
+	mkdir www
+	cd www
+	git clone https://github.com/EgorGologuzov/Evraz.RBP.git
+
+5.Установка .net sdk и runtime:
+	wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+	sudo dpkg -i packages-microsoft-prod.deb
+	rm packages-microsoft-prod.deb
+	sudo apt-get update
+	sudo apt-get install -y dotnet-sdk-6.0
+	sudo apt-get update
+	sudo apt-get install -y aspnetcore-runtime-6.0
+
+6.Сборка и запуск приложения:
+	cd /www/Evraz.RBP/RBP.Web
+	dotnet run
+	Ctrl + C //Закрыть приложение
+  
+7.Установка NGINX:
+	apt update
+	apt install nginx
+
+8.Настройка фаервола:
+	sudo ufw allow 'Nginx Full'
+	sudo ufw allow 22
+	sudo ufw allow 80
+	sudo ufw allow 443
+	sudo ufw enable
+	sudo ufw status //Должен быть active
+
+9.Настройка сервиса для RBP.Web:
+	nano /etc/systemd/system/RBP.Web.service
+	(Заполняем файл данными и сохраняем)
+		'''
+		[Unit]
+		Description=Evraz.RBP.Web project service config
+
+		[Service]
+		WorkingDirectory=/www/Evraz.RBP/RBP.Web
+		ExecStart=/usr/bin/dotnet /www/Evraz.RBP/RBP.Web/bin/Debug/net6.0/RBP.Web.dll
+		Restart=always
+
+		#restart after 10 sec before crashes
+		RestartSec=10
+		KillSignal=SIGINT
+		SyslogIdentifier=RBPWeb
+		User=www-data
+
+		#envs
+		Environment=ASPNETCORE_ENVIRONMENT=Production
+		Environment=DOTNET_PRINT_TELEMETRY_MESSAGE=false
+
+		[Install]
+		WantedBy=multi-user.target
+		'''
+	systemctl enable RBP.Web.service
+	systemctl start RBP.Web.service
+	systemctl status RBP.Web.service
+
+10.Настройка NGINX:
+	nano /etc/nginx/sites-available/egor-gologuzov.ru
+	(Заполняем файл данными и сохраняем)
+		'''
+		server {
+			listen 80;
+			server_name egor-gologuzov.ru;
+			location / {
+				proxy_pass http://127.0.0.1:5000;
+				proxy_http_version 1.1;
+				proxy_set_header Upgrade $http_upgrade;
+				proxy_set_header Connection keep-alive;
+				proxy_set_header Host $host;
+				proxy_cache_bypass $http_upgrade;
+				proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+				proxy_set_header X-Forwarded-Proto $scheme;
+			}
+		}
+		'''
+	sudo ln -s /etc/nginx/sites-available/egor-gologuzov.ru /etc/nginx/sites-enabled/
+	sudo nano /etc/nginx/nginx.conf
+	(раскоментировать в http блоке #server_names_hash_bucket_size 64;)
+	sudo nano /etc/nginx/sites-available/default
+	(в блоке location закоментировать строку try_files $uri $uri/ =404;
+	и вставить это)
+		'''
+		proxy_pass         http://127.0.0.1:5000/;
+		proxy_http_version 1.1;
+		proxy_set_header   Upgrade $http_upgrade;
+		proxy_set_header   Connection keep-alive;
+		proxy_set_header   Host $host;
+		proxy_cache_bypass $http_upgrade;
+		proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header   X-Forwarded-Proto $scheme;
+		'''
+
+11.Делегирование домена egor-gologuzov.ru на Yandex Cloud:
+	DNS сервера: ns1.yandexcloud.net, ns2.yandexcloud.net
+
+12.Создание зоны в сервисе Cloud DNS:
+	зона: egor-gologuzov.ru.
+	тип: публичная
+	имя: egor-gologuzov-zone
+
+13.Создание записи типа А в зоне egor-gologuzov.ru:
+	имя: совпадает с именем зоны
+	значение: 158.160.80.59
+
+14.Переделигирование домена на бесплатном DNS-хостинге reg.ru, удаление зоны DNS в YC.
+
+15.Устновка PostgreSQL:
+	sudo su -
+	sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+	wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+    apt-get update
+	apt-get -y install postgresql-16 //для установки 16-й версии
+
+16.Создать базу данных:
+	su - postgres
+	psql
+	create database "EvrazRBP";
+	CREATE DATABASE "EvrazRBP" ENCODING 'win1251' lc_ctype='ru_RU.CP1251' lc_collate='ru_RU.CP1251';
+
+17.Накатить базу данных:
+	перейти в папку проекта базы данных
+	установка ef (один раз): dotnet tool install --global dotnet-ef --version 6.0.25
+	dotnet-ef database update
+
+18.Заполнение базы данных:
+	(делать из под любого пользователя)
+    перейти в папку со всеми sql скриптами
+    (файлы должны быть в кодировке UTF8 для Linux и win1251 для Windows консолей)
+    выполнить (Linux): psql -U postgres -h localhost -d EvrazRBP -f fill.sql
+    (для Windows): "C:\Program Files\PostgreSQL\16\bin\psql.exe" -U postgres -h localhost -d EvrazRBP -f fill.sql
+
+19.Выключение RBP.Web.service:
+	systemctl stop RBP.Web.service
+
+20.Обновление репозитория решения:
+	cd /www/Evraz.RBP
+	git pull
+
+21.Сборка проектов:
+	cd /www/Evraz.RBP/RBP.Web
+	dotnet build
+	cd /www/Evraz.RBP/RBP.API
+	dotnet build
+
+22.Настройка сервиса для RBP.API:
+	nano /etc/systemd/system/RBP.API.service
+	(Заполняем файл данными и сохраняем)
+		'''
+		[Unit]
+		Description=Evraz.RBP.API project service config
+
+		[Service]
+		WorkingDirectory=/www/Evraz.RBP/RBP.API/bin/Debug/net6.0
+		ExecStart=/usr/bin/dotnet /www/Evraz.RBP/RBP.API/bin/Debug/net6.0/RBP.API.dll
+		Restart=always
+
+		#restart after 10 sec before crashes
+		RestartSec=10
+		KillSignal=SIGINT
+		SyslogIdentifier=RBPApi
+		User=www-data
+
+		#envs
+		Environment=ASPNETCORE_ENVIRONMENT=Production
+		Environment=DOTNET_PRINT_TELEMETRY_MESSAGE=false
+
+		[Install]
+		WantedBy=multi-user.target
+		'''
+	systemctl enable RBP.API.service
+	systemctl start RBP.API.service
+	systemctl status RBP.API.service
+
+23.Долгое исправление проблемы запуска RBP.API:
+	Проблема заключалась в том, что при запуске сервиса RBP.API он постоянно завершался
+	с ошибкой (code=killed, status=6/ABRT) и перезапускался. Причиной было отсутствие https
+	сертификата на сервере. Проблема это возникала так как установил параметр Urls в файле 
+	appsettings.json проекта в значение "https://localhost:7204;http://localhost:5024",
+	чтобы приложение всегда запускалось на одних и тех же портах.
+	Решением проблемы стало установка значениея "Urls": "http://localhost:5024". Так же я 
+	закомментировал строку app.UseHttpsRedirection() в файле Program.cs проекта и персобрал
+	приложение, но не уверен, что это на что-то повлияло.
+	Для просмотра логов сервисов я использовал journalctl:
+	journalctl -u RBP.API
+	journalctl -u RBP.Web
+
+24.Установка часового пояса:
+	timedatectl set-timezone Asia/Yekaterinburg
+	(для поиска названия зоны ввести timedatectl list-timezones)
+	(чтобы изменения вступили в силу нужно перезапустить машину)
+
+25.Настройка HTTPS:
+	sudo apt install snapd
+	sudo snap install core; sudo snap refresh core
+	sudo snap install --classic certbot
+	sudo ln -s /snap/bin/certbot /usr/bin/certbot
+
+	#если нжинкс слушает 80ый порт то надо вырубить нжинкс
+	sudo systemctl stop nginx
+
+	sudo certbot --nginx -d egor-gologuzov.ru
+	sudo certbot renew --dry-run
+
+26.ПОСЛЕ ПЕРЕЗАПУСКА МАШИНЫ НУЖНО ВЫПОЛНИТЬ:
+	sudo certbot --nginx -d egor-gologuzov.ru
+	(выбрать опцию 2)
+
+27.Обновление данных ведомостей:
+	psql -U postgres -h localhost -d EvrazRBP
+	delete from "Statements";
+	\i /www/Evraz.RBP/RBP.Db/Sql/statements.sql
+	\i /www/Evraz.RBP/RBP.Db/Sql/statementdefects.sql
