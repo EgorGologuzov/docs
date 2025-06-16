@@ -15,7 +15,7 @@ venv\Scripts\activate
 
 Установка стандартного пакета для работы с FastAPI:
 ```
-pip install fastapi[standart]
+pip install "fastapi[standard]"
 ```
 
 Запуск приложения:
