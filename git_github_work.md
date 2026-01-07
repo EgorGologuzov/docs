@@ -46,7 +46,10 @@ git config --global init.defaultBranch main
 
 ### 5. Настройка репозитория
 
-Установить 
+Установить корректный URL для origin, чтобы можно было пушить:
+```
+git remote set-url origin git@GitHub-EgorGologuzov:EgorGologuzov/docs.git
+```
 
 ## Начало проекта:
 
