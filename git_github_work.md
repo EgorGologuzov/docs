@@ -1,6 +1,55 @@
 # Работа с Git, GitHub
 
+## Первоначальная настройка git:
+
+### 1. Генерация SSH ключей
+```
+// Создать папку для SSH
+mkdir C:\Users\Egor\.ssh\GitHub\EgorGologuzov
+
+// Сгенерировать SSH ключ (пароль оставить пустым)
+ssh-keygen -f C:\Users\Egor\.ssh\GitHub\EgorGologuzov\ssh_key
+```
+
+### 2. Настройка ssh config
+
+В файл `~/.ssh/config` добавить:
+
+```
+# Github account EgorGologuzov
+Host GitHub-EgorGologuzov
+    HostName github.com
+    User git
+    IdentityFile C:\Users\Egor\.ssh\GitHub\EgorGologuzov\ssh_key
+    IdentitiesOnly yes
+```
+
+### 3. Добавить ssh ключ к GitHub аккаунту
+
+GitHub account > Settings > SSH and GPG keys > New SSH key
+
+Проверить подключение:
+```
+ssh -T git@GitHub-EgorGologuzov
+yes // при первом подключении
+
+Hi EgorGologuzov! You've successfully authenticated, but GitHub does not provide shell access. // подключение успешно
+```
+
+### 4. Базовая настройка git (глобально)
+
+```
+git config --global user.name "EgorGologuzov"
+git config --global user.email "egor13lion@gmail.com
+git config --global init.defaultBranch main
+```
+
+### 5. Настройка репозитория
+
+Установить 
+
 ## Начало проекта:
+
 ### 1. Создать репозиторий
 ```
 // Созадть папку проекта
@@ -26,7 +75,7 @@ git pull
 ```
 
 ## Создание форка:
->Форк - твоя личная копия чужой репы на GitHub
+> Форк - твоя личная копия чужой репы на GitHub
 1. Зайти на страницу оригинального репозитория
 2. Справа сверху Fork > стрелочка > create new fork
 3. Ничего не меняешь > кнопка Create
