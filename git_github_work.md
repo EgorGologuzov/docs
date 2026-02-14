@@ -16,6 +16,13 @@ ssh-keygen -f C:\Users\Egor\.ssh\GitHub\EgorGologuzov\ssh_key
 В файл `~/.ssh/config` добавить:
 
 ```
+# Github account default
+Host github.com
+    HostName github.com
+    User git
+    IdentityFile C:\Users\Egor\.ssh\GitHub\EgorGologuzov\ssh_key
+    IdentitiesOnly yes
+
 # Github account EgorGologuzov
 Host GitHub-EgorGologuzov
     HostName github.com
@@ -49,6 +56,18 @@ git config --global init.defaultBranch main
 Установить корректный URL для origin, чтобы можно было пушить:
 ```
 git remote set-url origin git@GitHub-EgorGologuzov:EgorGologuzov/docs.git
+```
+
+### 6. Клинорвание репозитория
+
+Если нужна авторизация в дефолтном аккаунте ssh
+```
+git clone git@github.com:EgorGologuzov/docs.git
+```
+
+Если нужна авторизация в конкретном аккаунте ssh
+```
+git clone git@GitHub-EgorGologuzov:EgorGologuzov/docs.git
 ```
 
 ## Начало проекта:
