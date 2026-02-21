@@ -47,7 +47,7 @@ Hi EgorGologuzov! You've successfully authenticated, but GitHub does not provide
 
 ```
 git config --global user.name "EgorGologuzov"
-git config --global user.email "egor13lion@gmail.com
+git config --global user.email "gologuzovegor@gmail.com"
 git config --global init.defaultBranch main
 ```
 
