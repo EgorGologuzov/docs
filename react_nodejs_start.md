@@ -148,6 +148,12 @@ npm i @reduxjs/toolkit react-redux
 npm i @tanstack/react-query
 ```
 
+## Установка инструментов отладки
+
+- установить расширение для React: https://chromewebstore.google.com/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi
+- установить расширение для redux: https://chromewebstore.google.com/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd
+
+
 # Старт из склонированного репозитория
 
 ## Установить недостающие зависимости из package.json
