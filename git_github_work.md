@@ -3,13 +3,8 @@
 ## Первоначальная настройка git:
 
 ### 1. Генерация SSH ключей
-```
-// Создать папку для SSH
-mkdir C:\Users\Egor\.ssh\GitHub\EgorGologuzov
 
-// Сгенерировать SSH ключ (пароль оставить пустым)
-ssh-keygen -f C:\Users\Egor\.ssh\GitHub\EgorGologuzov\ssh_key
-```
+Создать новый SSH ключ по инструкции создания SSH ключей
 
 ### 2. Настройка ssh config
 
