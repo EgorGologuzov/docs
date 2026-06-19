@@ -36,4 +36,12 @@ Host iqmenu-vm
     HostName 111.88.151.58
     User egor
     IdentityFile C:\Users\{WindowsUserName}\.ssh\YandexCloud\gologuzovegor\ssh_key
+
+# Доступ по паролю
+Host K23-1
+    HostName 192.168.0.35
+    User administrator
+    Port 22
+    PubkeyAuthentication no
+    PreferredAuthentications password
 ```
